@@ -1,6 +1,5 @@
 'use strict';
 
-
 const express = require('express');
 const cors = require('cors');
 const endpoints = require('express-endpoints');
@@ -21,6 +20,8 @@ const app = express();
 
 // Add CORS headers
 app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Add health check endpoint
 app.get(SERVICE_CHECK_HTTP, (req, res) => res.send({ uptime: process.uptime() }));
@@ -30,8 +31,16 @@ app.get(SERVICE_ENDPOINTS, endpoints());
 
 // Add all other service routes
 app.post('/orders', (req, res) => {
-  sendMail();
-  res.status(201).end();
+    let products = req.body.products;
+        
+    let productList = '';
+
+    for (let product of products) {
+        productList = productList + product.title + '<br>';
+    }
+
+    sendMail(productList);
+    res.status(201).end();
 });
 
 
@@ -43,7 +52,7 @@ const server = app.listen(PORT, () => console.log(`Service listening on port ${P
 gracefulShutdown(server, { timeout: SHUTDOWN_TIMEOUT });
 
 
-function sendMail()
+function sendMail(productList)
 {
     var nodemailer = require('nodemailer');
 
@@ -55,8 +64,8 @@ function sendMail()
         from: '"Ulf" <ulf@spartakiade.org>', // sender address 
         to: 'lessmann.mobil@live.de', // list of receivers 
         subject: 'Ihre Bestellung bei uns', // Subject line 
-        text: 'Ihre Bestellung wird jetzt bearbeitet', // plaintext body 
-        html: '<b>Ihre Bestellung wird jetzt bearbeitet</b>' // html body 
+        text: 'Ihre Bestellung wird jetzt bearbeitet' , // plaintext body 
+        html: '<b>Ihre Bestellung wird jetzt bearbeitet</b><br>Ihre Bestellung<br><br>' + productList // html body 
     };
 
     // send mail with defined transport object 
