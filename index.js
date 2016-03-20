@@ -28,15 +28,8 @@ app.get(SERVICE_CHECK_HTTP, (req, res) => res.send({ uptime: process.uptime() })
 app.get(SERVICE_ENDPOINTS, endpoints());
 
 // Add all other service routes
-app.get('/superstars', (req, res) => {
-  res.send([
-    'Scarlett Johansson',
-    'Leonardo DiCaprio',
-    'Jennifer Lawrence',
-    'Ashton Kutcher',
-    'Kate Beckinsale',
-    'Robert Downey Jr.'
-  ]);
+app.post('/orders', (req, res) => {
+  res.status(201).end();
 });
 
 // Start the server
