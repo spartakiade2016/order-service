@@ -3,6 +3,7 @@
 const express = require('express');
 const cors = require('cors');
 const endpoints = require('express-endpoints');
+const bodyParser = require('body-parser');
 const gracefulShutdown = require('http-graceful-shutdown');
 const agent = require('multiagent');
 
