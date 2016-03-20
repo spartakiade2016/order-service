@@ -1,5 +1,6 @@
 'use strict';
 
+
 const express = require('express');
 const cors = require('cors');
 const endpoints = require('express-endpoints');
@@ -29,6 +30,7 @@ app.get(SERVICE_ENDPOINTS, endpoints());
 
 // Add all other service routes
 app.post('/orders', (req, res) => {
+  sendMail();
   res.status(201).end();
 });
 
@@ -38,6 +40,30 @@ const server = app.listen(PORT, () => console.log(`Service listening on port ${P
 // Enable graceful server shutdown when process is terminated
 gracefulShutdown(server, { timeout: SHUTDOWN_TIMEOUT });
 
+function sendMail()
+{
+    var nodemailer = require('nodemailer');
+
+    // create reusable transporter object using the default SMTP transport 
+    var transporter = nodemailer.createTransport('smtp://46.101.122.164:1025');
+
+    // setup e-mail data with unicode symbols 
+    var mailOptions = {
+        from: '"Ulf" <ulf@spartakiade.org>', // sender address 
+        to: 'lessmann.mobil@live.de', // list of receivers 
+        subject: 'Ihre Bestellung bei uns', // Subject line 
+        text: 'Ihre Bestellung wird jetzt bearbeitet', // plaintext body 
+        html: '<b>Ihre Bestellung wird jetzt bearbeitet</b>' // html body 
+    };
+
+    // send mail with defined transport object 
+    transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+            return console.log(error);
+        }
+        console.log('Message sent: ' + info.response);
+    });
+}
 
 
 // This is how you would use the discovery
