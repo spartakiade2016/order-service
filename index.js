@@ -34,11 +34,14 @@ app.post('/orders', (req, res) => {
   res.status(201).end();
 });
 
+
+
 // Start the server
 const server = app.listen(PORT, () => console.log(`Service listening on port ${PORT} ...`));
 
 // Enable graceful server shutdown when process is terminated
 gracefulShutdown(server, { timeout: SHUTDOWN_TIMEOUT });
+
 
 function sendMail()
 {
